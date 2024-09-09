@@ -1,0 +1,518 @@
+database:
+  name: DEV_DB
+  schema:
+    name: SALES
+    tables:
+      - name: Account
+        columns:
+          - name: AccountId
+            type: NUMBER
+            precision: 6
+            scale: 0
+            options:
+              nullable: false
+              primary_key: true
+          - name: AccountName
+            type: VARCHAR
+            length: 100
+            options:
+              nullable: true
+          - name: AccountOwner
+            type: VARCHAR
+            length: 100
+            options:
+              nullable: true
+          - name: AccountTypeId
+            type: NUMBER
+            precision: 2
+            scale: 0
+            options:
+              nullable: true
+          - name: CountryId
+            type: NUMBER
+            precision: 4
+            scale: 0
+            options:
+              nullable: true
+        comment: 'List of all Accounts (Ledgers) not for UserRegistration and Authentication'
+
+      - name: AccountType
+        columns:
+          - name: AccountTypeId
+            type: NUMBER
+            precision: 2
+            scale: 0
+            options:
+              nullable: false
+              primary_key: true
+          - name: AccountTypeName
+            type: VARCHAR
+            length: 25
+            options:
+              nullable: true
+        comment: 'List of Account Types (Premium, Platinum, Gold, Silver, Bronze)'
+
+      - name: Budget
+        columns:
+          - name: BudgetId
+            type: NUMBER
+            precision: 12
+            scale: 0
+            options:
+              nullable: false
+              primary_key: true
+          - name: ChannelId
+            type: NUMBER
+            precision: 12
+            scale: 0
+            options:
+              nullable: true
+          - name: ExpenseAreaId
+            type: NUMBER
+            precision: 12
+            scale: 0
+            options:
+              nullable: true
+          - name: ExpenseCategoryId
+            type: NUMBER
+            precision: 12
+            scale: 0
+            options:
+              nullable: true
+          - name: CountryId
+            type: NUMBER
+            precision: 4
+            scale: 0
+            options:
+              nullable: true
+          - name: MonthId
+            type: VARCHAR
+            length: 7
+            options:
+              nullable: true
+          - name: Amount
+            type: NUMBER
+            precision: 12
+            scale: 2
+            options:
+              nullable: true
+        comment: 'Budgets for Expenses'
+
+      - name: Channel
+        columns:
+          - name: ChannelId
+            type: NUMBER
+            precision: 2
+            scale: 0
+            options:
+              nullable: false
+              primary_key: true
+          - name: ChannelName
+            type: VARCHAR
+            length: 25
+            options:
+              nullable: true
+        comment: 'Sales Channel (Online, Retail, TeleMarket, ...)' 
+
+      - name: Country
+        columns:
+          - name: CountryId
+            type: NUMBER
+            precision: 4
+            scale: 0
+            options:
+              nullable: false
+              primary_key: true
+          - name: CountryName
+            type: VARCHAR
+            length: 50
+            options:
+              nullable: true
+          - name: RegionName
+            type: NUMBER
+            precision: 2
+            scale: 0
+            options:
+              nullable: true
+        comment: 'List of all Countries'
+
+      - name: DateDetail
+        columns:
+          - name: Date
+            type: DATE
+            options:
+              nullable: false
+              primary_key: true
+          - name: MonthId
+            type: VARCHAR
+            length: 7
+            options:
+              nullable: true
+          - name: YearId
+            type: NUMBER
+            precision: 4
+            scale: 0
+            options:
+              nullable: true
+          - name: WeekId
+            type: NUMBER
+            precision: 2
+            scale: 0
+            options:
+              nullable: true
+          - name: WeekDay
+            type: NUMBER
+            precision: 1
+            scale: 0
+            options:
+              nullable: true
+          - name: YearDay
+            type: NUMBER
+            precision: 3
+            scale: 0
+            options:
+              nullable: true
+          - name: Quarter
+            type: VARCHAR
+            length: 6
+            options:
+              nullable: true
+          - name: HalfYear
+            type: VARCHAR
+            length: 6
+            options:
+              nullable: true
+          - name: MonthName
+            type: VARCHAR
+            length: 15
+            options:
+              nullable: true
+          - name: DayName
+            type: VARCHAR
+            length: 15
+            options:
+              nullable: true
+          - name: MonthNameAbbr
+            type: VARCHAR
+            length: 3
+            options:
+              nullable: true
+          - name: DayNameAbbr
+            type: VARCHAR
+            length: 3
+            options:
+              nullable: true
+          - name: QuarterName
+            type: VARCHAR
+            length: 7
+            options:
+              nullable: true
+          - name: HalfYearName
+            type: VARCHAR
+            length: 7
+            options:
+              nullable: true
+          - name: MonthAndYear
+            type: NUMBER
+            precision: 6
+            scale: 0
+            options:
+              nullable: true
+        comment: 'Details of Date'
+
+      - name: Expense
+        columns:
+          - name: VoucherId
+            type: NUMBER
+            precision: 12
+            scale: 0
+            options:
+              nullable: false
+              primary_key: true
+          - name: Date
+            type: DATE
+            options:
+              nullable: true
+          - name: ExpenseCategoryId
+            type: NUMBER
+            precision: 4
+            scale: 0
+            options:
+              nullable: true
+          - name: ExpenseAreaId
+            type: NUMBER
+            precision: 4
+            scale: 0
+            options:
+              nullable: true
+          - name: CountryId
+            type: NUMBER
+            precision: 4
+            scale: 0
+            options:
+              nullable: true
+          - name: ChannelId
+            type: NUMBER
+            precision: 2
+            scale: 0
+            options:
+              nullable: true
+          - name: Details
+            type: VARCHAR
+            length: 200
+            options:
+              nullable: true
+          - name: Amount
+            type: NUMBER
+            precision: 14
+            scale: 2
+            options:
+              nullable: true
+        comment: 'List of Operational Expenses'
+
+      - name: ExpenseArea
+        columns:
+          - name: ExpenseAreaId
+            type: NUMBER
+            precision: 4
+            scale: 0
+            options:
+              nullable: false
+              primary_key: true
+          - name: ExpenseAreaName
+            type: VARCHAR
+            length: 100
+            options:
+              nullable: true
+        comment: 'Expenses Area (HR, Science, Research, Finance, ...)'
+
+      - name: Product
+        columns:
+          - name: ProductId
+            type: NUMBER
+            precision: 6
+            scale: 0
+            options:
+              nullable: false
+              primary_key: true
+          - name: ProductName
+            type: VARCHAR
+            length: 100
+            options:
+              nullable: true
+          - name: ProductCategoryId
+            type: NUMBER
+            precision: 4
+            scale: 0
+            options:
+              nullable: true
+        comment: 'List of Products'
+
+      - name: ProductCategory
+        columns:
+          - name: ProductCategoryId
+            type: NUMBER
+            precision: 4
+            scale: 0
+            options:
+              nullable: false
+              primary_key: true
+          - name: ProductCategoryName
+            type: VARCHAR
+            length: 100
+            options:
+              nullable: true
+        comment: 'List of Product Categories'
+
+      - name: Region
+        columns:
+          - name: RegionId
+            type: NUMBER
+            precision: 2
+            scale: 0
+            options:
+              nullable: false
+              primary_key: true
+          - name: RegionName
+            type: VARCHAR
+            length: 50
+            options:
+              nullable: true
+        comment: 'List of all Geographical Regions like APAC, LATAM, NA, EU, ...'
+
+      - name: Sale
+        columns:
+          - name: SaleId
+            type: NUMBER
+            precision: 12
+            scale: 0
+            options:
+              nullable: false
+              primary_key: true
+          - name: SaleDate
+            type: DATE
+            options:
+              nullable: true
+          - name: ChannelId
+            type: NUMBER
+            precision: 2
+            scale: 0
+            options:
+              nullable: true
+          - name: CountryId
+            type: NUMBER
+            precision: 4
+            scale: 0
+            options:
+              nullable: true
+          - name: AccountId
+            type: NUMBER
+            precision: 6
+            scale: 0
+            options:
+              nullable: true
+        comment: 'List of Sales Master Data'
+
+      - name: SaleLineItem
+        columns:
+          - name: SaleId
+            type: NUMBER
+            precision: 12
+            scale: 0
+            options:
+              nullable: false
+          - name: ProductId
+            type: NUMBER
+            precision: 6
+            scale: 0
+            options:
+              nullable: false
+          - name: Quantity
+            type: NUMBER
+            precision: 14
+            scale: 2
+            options:
+              nullable: true
+          - name: Rate
+            type: NUMBER
+            precision: 14
+            scale: 2
+            options:
+              nullable: true
+        comment: 'List of Sale Line Items'
+
+      - name: SaleTarget
+        columns:
+          - name: MonthId
+            type: VARCHAR
+            length: 7
+            options:
+              nullable: false
+          - name: Target
+            type: NUMBER
+            precision: 14
+            scale: 2
+            options:
+              nullable: true
+        comment: 'Sales Target (Generic)'
+
+      - name: SaleTargetForAccount
+        columns:
+          - name: AccountId
+            type: NUMBER
+            precision: 6
+            scale: 0
+            options:
+              nullable: false
+          - name: MonthId
+            type: VARCHAR
+            length: 7
+            options:
+              nullable: false
+          - name: Target
+            type: NUMBER
+            precision: 14
+            scale: 2
+            options:
+              nullable: true
+        comment: 'Sale Target for Accounts'
+
+      - name: SaleTargetForProduct
+        columns:
+          - name: ProductId
+            type: NUMBER
+            precision: 6
+            scale: 0
+            options:
+              nullable: false
+          - name: MonthId
+            type: VARCHAR
+            length: 7
+            options:
+              nullable: false
+          - name: Target
+            type: NUMBER
+            precision: 14
+            scale: 2
+            options:
+              nullable: true
+        comment: 'Sales Target for Product'
+
+      - name: SaleTargetForProductCategory
+        columns:
+          - name: ProductCategoryId
+            type: NUMBER
+            precision: 6
+            scale: 0
+            options:
+              nullable: false
+          - name: MonthId
+            type: VARCHAR
+            length: 7
+            options:
+              nullable: false
+          - name: Target
+            type: NUMBER
+            precision: 14
+            scale: 2
+            options:
+              nullable: true
+        comment: 'Sales Target for Product Category'
+
+      - name: SalesTarget
+        columns:
+          - name: ProductId
+            type: NUMBER
+            precision: 6
+            scale: 0
+            options:
+              nullable: false
+          - name: ChannelId
+            type: NUMBER
+            precision: 2
+            scale: 0
+            options:
+              nullable: false
+          - name: CountryId
+            type: NUMBER
+            precision: 7
+            scale: 0
+            options:
+              nullable: false
+          - name: AccountId
+            type: NUMBER
+            precision: 6
+            scale: 0
+            options:
+              nullable: false
+          - name: MonthId
+            type: VARCHAR
+            length: 7
+            options:
+              nullable: false
+          - name: Target
+            type: NUMBER
+            precision: 14
+            scale: 2
+            options:
+              nullable: true
