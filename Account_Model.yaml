@@ -1,0 +1,87 @@
+name: SalesSemanticModel
+description: A semantic model for analyzing accounts and related sales data.
+
+tables:
+  - name: Account
+    description: List of all Accounts (Ledgers) not for User Registration and Authentication.
+    base_table:
+      database: DEV_DB
+      schema: SALES
+      table: '"Account"'
+
+    dimensions:
+      - name: AccountId
+        synonyms: [AccountID, Account ID]
+        description: The unique identifier for each account.
+        expr: '"AccountId"'
+        data_type: NUMBER
+        unique: true
+        nullable: false
+
+      - name: AccountName
+        synonyms: [Account Name, Ledger Name]
+        description: The name of the account.
+        expr: '"AccountName"'
+        data_type: VARCHAR(100)
+        unique: false
+        nullable: true
+
+      - name: AccountOwner
+        synonyms: [Account Owner, Ledger Owner]
+        description: The owner of the account.
+        expr: '"AccountOwner"'
+        data_type: VARCHAR(100)
+        unique: false
+        nullable: true
+
+      - name: AccountTypeId
+        synonyms: [Account Type ID, Ledger Type ID]
+        description: Identifier for the type of account.
+        expr: '"AccountTypeId"'
+        data_type: NUMBER(2,0)
+        unique: false
+        nullable: true
+
+      - name: CountryId
+        synonyms: [Country ID]
+        description: The identifier for the country associated with the account.
+        expr: '"CountryId"'
+        data_type: NUMBER(4,0)
+        unique: false
+        nullable: true
+
+    measures:
+      - name: AccountCount
+        synonyms: [Number of Accounts, Account Count]
+        description: The total number of accounts.
+        expr: 'COUNT(DISTINCT "AccountId")'
+        data_type: NUMBER
+        default_aggregation: count_distinct
+
+    time_dimensions: []  # Add time dimensions when you have time-related columns like CreatedDate or UpdatedDate
+
+    relationships: []  # Define relationships once new tables are added
+
+    security: []  # Row-level security can be defined later
+
+    metadata:
+      last_updated: 2024-09-11
+      created_by: 'Data Engineering Team'
+
+verified_queries:
+  - name: Account Count by Country
+    question: How many accounts are there per country?
+    verified_at: 1694448000  # Example timestamp for September 11, 2024
+    verified_by: Data Engineering Team
+    sql: >
+      SELECT "CountryId", COUNT(DISTINCT "AccountId") AS "AccountCount"
+      FROM DEV_DB.SALES."Account"
+      GROUP BY "CountryId"
+
+  - name: Total Accounts
+    question: What is the total number of accounts?
+    verified_at: 1694448000
+    verified_by: Data Analyst Team
+    sql: >
+      SELECT COUNT(DISTINCT "AccountId") AS "TotalAccounts"
+      FROM DEV_DB.SALES."Account"
