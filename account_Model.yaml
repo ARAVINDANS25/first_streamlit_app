@@ -58,15 +58,6 @@ tables:
         data_type: NUMBER
         default_aggregation: count_distinct
 
-    time_dimensions: []  # Add time dimensions when you have time-related columns like CreatedDate or UpdatedDate
-
-    relationships: []  # Define relationships once new tables are added
-
-    security: []  # Row-level security can be defined later
-
-    metadata:
-      last_updated: 2024-09-11
-      created_by: 'Data Engineering Team'
 
 verified_queries:
   - name: Account Count by Country
