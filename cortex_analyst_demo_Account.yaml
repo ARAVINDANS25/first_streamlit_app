@@ -1,0 +1,114 @@
+# Name and description of the semantic model.
+name: Account Data Model
+description: This semantic model is used to query and analyze account-related data in the cortex_analyst_demo schema.
+
+# A semantic model can contain one or more tables.
+tables:
+
+  # A logical table on top of the 'Account' base table.
+  - name: account
+    description: A logical table capturing details about accounts, including their type, owner, and country.
+
+    # The fully qualified name of the base table.
+    base_table:
+      database: DEV_DB
+      schema: cortex_analyst_demo
+      table: Account
+
+    # Dimension columns in the logical table.
+    dimensions:
+      - name: account_id
+        synonyms:
+          - "Account ID"
+        description: The unique identifier for the account.
+        expr: AccountId
+        data_type: NUMBER
+        unique: true
+        sample_values:
+          - "1"
+          - "2"
+
+      - name: account_name
+        synonyms:
+          - "Account Name"
+        description: The name of the account.
+        expr: AccountName
+        data_type: VARCHAR
+        unique: false
+        sample_values:
+          - "Southridge Video"
+          - "Tailspin Toys"
+
+      - name: account_owner
+        synonyms:
+          - "Account Owner"
+          - "Owner"
+        description: The person responsible for managing the account.
+        expr: AccountOwner
+        data_type: VARCHAR
+        unique: false
+        sample_values:
+          - "Derek Brown"
+          - "Joe Healy"
+
+      - name: account_type_id
+        synonyms:
+          - "Account Type ID"
+        description: The identifier for the type of account.
+        expr: AccountTypeId
+        data_type: NUMBER
+        unique: false
+        sample_values:
+          - "3"
+          - "2"
+
+      - name: country_id
+        synonyms:
+          - "Country ID"
+        description: The identifier for the country associated with the account.
+        expr: CountryId
+        data_type: NUMBER
+        unique: false
+        sample_values:
+          - "104"
+          - "122"
+
+    # Measure columns in the logical table.
+    measures:
+      - name: total_accounts
+        synonyms:
+          - "Number of Accounts"
+        description: The total number of accounts.
+        expr: COUNT(DISTINCT AccountId)
+        data_type: NUMBER
+        default_aggregation: count_distinct
+
+    # Filters commonly used in queries for the table.
+    filters:
+      - name: accounts_in_country
+        synonyms:
+          - "Accounts by Country"
+        description: A filter to restrict the query to specific countries.
+        expr: CountryId IN (:country_id)
+        sample_values:
+          - "104"  # USA
+          - "122"  # UK
+
+# Example verified queries for users.
+verified_queries:
+  - name: Total Accounts by Country
+    question: How many accounts are there per country?
+    verified_at: 1694452800  # Example timestamp
+    verified_by: Data Engineering Team
+    sql: |
+      SELECT CountryId, COUNT(DISTINCT AccountId) AS AccountCount
+      FROM DEV_DB.cortex_analyst_demo.Account
+      GROUP BY CountryId
+
+  - name: List of Account Owners
+    question: Who are the account owners?
+    verified_at: 1694452800
+    verified_by: Data Analyst Team
+    sql: |
+      SELECT DISTINCT AccountOwner
+      FROM DEV_DB.cortex_analyst_demo.Account
