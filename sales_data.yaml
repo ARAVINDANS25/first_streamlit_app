@@ -1,518 +1,612 @@
-database:
-  name: DEV_DB
-  schema:
-    name: SALES
-    tables:
-      - name: Account
-        columns:
-          - name: AccountId
-            type: NUMBER
-            precision: 6
-            scale: 0
-            options:
-              nullable: false
-              primary_key: true
-          - name: AccountName
-            type: VARCHAR
-            length: 100
-            options:
-              nullable: true
-          - name: AccountOwner
-            type: VARCHAR
-            length: 100
-            options:
-              nullable: true
-          - name: AccountTypeId
-            type: NUMBER
-            precision: 2
-            scale: 0
-            options:
-              nullable: true
-          - name: CountryId
-            type: NUMBER
-            precision: 4
-            scale: 0
-            options:
-              nullable: true
-        comment: 'List of all Accounts (Ledgers) not for UserRegistration and Authentication'
+name: SalesSemanticModel
+description: A semantic model for analyzing accounts and related sales data.
 
-      - name: AccountType
-        columns:
-          - name: AccountTypeId
-            type: NUMBER
-            precision: 2
-            scale: 0
-            options:
-              nullable: false
-              primary_key: true
-          - name: AccountTypeName
-            type: VARCHAR
-            length: 25
-            options:
-              nullable: true
-        comment: 'List of Account Types (Premium, Platinum, Gold, Silver, Bronze)'
+tables:
+  - name: Account
+    description: List of all Accounts (Ledgers) not for User Registration and Authentication.
+    base_table:
+      database: DEV_DB
+      schema: SALES
+      table: '"Account"'
+    dimensions:
+      - name: AccountId
+        synonyms: [AccountID, Account ID]
+        description: The unique identifier for each account.
+        expr: '"AccountId"'
+        data_type: NUMBER
+        unique: true
+      - name: AccountName
+        synonyms: [Account Name, Ledger Name]
+        description: The name of the account.
+        expr: '"AccountName"'
+        data_type: VARCHAR
+        unique: false
+      - name: AccountOwner
+        synonyms: [Account Owner, Ledger Owner]
+        description: The owner of the account.
+        expr: '"AccountOwner"'
+        data_type: VARCHAR
+        unique: false
+    measures:
+      - name: AccountCount
+        synonyms: [Number of Accounts, Account Count]
+        description: The total number of accounts.
+        expr: 'COUNT(DISTINCT "AccountId")'
+        data_type: NUMBER
+        default_aggregation: count_distinct
 
-      - name: Budget
-        columns:
-          - name: BudgetId
-            type: NUMBER
-            precision: 12
-            scale: 0
-            options:
-              nullable: false
-              primary_key: true
-          - name: ChannelId
-            type: NUMBER
-            precision: 12
-            scale: 0
-            options:
-              nullable: true
-          - name: ExpenseAreaId
-            type: NUMBER
-            precision: 12
-            scale: 0
-            options:
-              nullable: true
-          - name: ExpenseCategoryId
-            type: NUMBER
-            precision: 12
-            scale: 0
-            options:
-              nullable: true
-          - name: CountryId
-            type: NUMBER
-            precision: 4
-            scale: 0
-            options:
-              nullable: true
-          - name: MonthId
-            type: VARCHAR
-            length: 7
-            options:
-              nullable: true
-          - name: Amount
-            type: NUMBER
-            precision: 12
-            scale: 2
-            options:
-              nullable: true
-        comment: 'Budgets for Expenses'
+  - name: AccountType
+    description: List of Account Types (Premium, Platinum, Gold, Silver, Bronze).
+    base_table:
+      database: DEV_DB
+      schema: SALES
+      table: '"AccountType"'
+    dimensions:
+      - name: AccountTypeId
+        synonyms: [AccountTypeID, Account Type ID]
+        description: The unique identifier for each account type.
+        expr: '"AccountTypeId"'
+        data_type: NUMBER
+        unique: true
+      - name: AccountTypeName
+        synonyms: [Account Type Name]
+        description: The name of the account type.
+        expr: '"AccountTypeName"'
+        data_type: VARCHAR
+        unique: false
 
-      - name: Channel
-        columns:
-          - name: ChannelId
-            type: NUMBER
-            precision: 2
-            scale: 0
-            options:
-              nullable: false
-              primary_key: true
-          - name: ChannelName
-            type: VARCHAR
-            length: 25
-            options:
-              nullable: true
-        comment: 'Sales Channel (Online, Retail, TeleMarket, ...)' 
+  - name: Budget
+    description: Budgets for Expenses.
+    base_table:
+      database: DEV_DB
+      schema: SALES
+      table: '"Budget"'
+    dimensions:
+      - name: BudgetId
+        synonyms: [BudgetID]
+        description: The unique identifier for each budget.
+        expr: '"BudgetId"'
+        data_type: NUMBER
+        unique: true
+      - name: ChannelId
+        synonyms: [ChannelID]
+        description: The unique identifier for each channel.
+        expr: '"ChannelId"'
+        data_type: NUMBER
+        unique: false
+      - name: ExpenseAreaId
+        synonyms: [ExpenseAreaID]
+        description: The unique identifier for each expense area.
+        expr: '"ExpenseAreaId"'
+        data_type: NUMBER
+        unique: false
+      - name: ExpenseCategoryId
+        synonyms: [ExpenseCategoryID]
+        description: The unique identifier for each expense category.
+        expr: '"ExpenseCategoryId"'
+        data_type: NUMBER
+        unique: false
+      - name: CountryId
+        synonyms: [CountryID]
+        description: The unique identifier for each country.
+        expr: '"CountryId"'
+        data_type: NUMBER
+        unique: false
+      - name: MonthId
+        synonyms: [MonthID]
+        description: The month identifier.
+        expr: '"MonthId"'
+        data_type: VARCHAR
+        unique: false
+    measures:
+      - name: TotalAmount
+        synonyms: [Total Budget Amount]
+        description: The total amount for the budget.
+        expr: 'SUM("Amount")'
+        data_type: NUMBER
+        default_aggregation: sum
 
-      - name: Country
-        columns:
-          - name: CountryId
-            type: NUMBER
-            precision: 4
-            scale: 0
-            options:
-              nullable: false
-              primary_key: true
-          - name: CountryName
-            type: VARCHAR
-            length: 50
-            options:
-              nullable: true
-          - name: RegionName
-            type: NUMBER
-            precision: 2
-            scale: 0
-            options:
-              nullable: true
-        comment: 'List of all Countries'
+  - name: Channel
+    description: Sales Channel (Online, Retail, TeleMarket, ...).
+    base_table:
+      database: DEV_DB
+      schema: SALES
+      table: '"Channel"'
+    dimensions:
+      - name: ChannelId
+        synonyms: [ChannelID]
+        description: The unique identifier for each channel.
+        expr: '"ChannelId"'
+        data_type: NUMBER
+        unique: true
+      - name: ChannelName
+        synonyms: [Channel Name]
+        description: The name of the channel.
+        expr: '"ChannelName"'
+        data_type: VARCHAR
+        unique: false
 
-      - name: DateDetail
-        columns:
-          - name: Date
-            type: DATE
-            options:
-              nullable: false
-              primary_key: true
-          - name: MonthId
-            type: VARCHAR
-            length: 7
-            options:
-              nullable: true
-          - name: YearId
-            type: NUMBER
-            precision: 4
-            scale: 0
-            options:
-              nullable: true
-          - name: WeekId
-            type: NUMBER
-            precision: 2
-            scale: 0
-            options:
-              nullable: true
-          - name: WeekDay
-            type: NUMBER
-            precision: 1
-            scale: 0
-            options:
-              nullable: true
-          - name: YearDay
-            type: NUMBER
-            precision: 3
-            scale: 0
-            options:
-              nullable: true
-          - name: Quarter
-            type: VARCHAR
-            length: 6
-            options:
-              nullable: true
-          - name: HalfYear
-            type: VARCHAR
-            length: 6
-            options:
-              nullable: true
-          - name: MonthName
-            type: VARCHAR
-            length: 15
-            options:
-              nullable: true
-          - name: DayName
-            type: VARCHAR
-            length: 15
-            options:
-              nullable: true
-          - name: MonthNameAbbr
-            type: VARCHAR
-            length: 3
-            options:
-              nullable: true
-          - name: DayNameAbbr
-            type: VARCHAR
-            length: 3
-            options:
-              nullable: true
-          - name: QuarterName
-            type: VARCHAR
-            length: 7
-            options:
-              nullable: true
-          - name: HalfYearName
-            type: VARCHAR
-            length: 7
-            options:
-              nullable: true
-          - name: MonthAndYear
-            type: NUMBER
-            precision: 6
-            scale: 0
-            options:
-              nullable: true
-        comment: 'Details of Date'
+  - name: Country
+    description: List of all Countries.
+    base_table:
+      database: DEV_DB
+      schema: SALES
+      table: '"Country"'
+    dimensions:
+      - name: CountryId
+        synonyms: [CountryID]
+        description: The unique identifier for each country.
+        expr: '"CountryId"'
+        data_type: NUMBER
+        unique: true
+      - name: CountryName
+        synonyms: [Country Name]
+        description: The name of the country.
+        expr: '"CountryName"'
+        data_type: VARCHAR
+        unique: false
+      - name: RegionName
+        synonyms: [RegionID]
+        description: The region identifier.
+        expr: '"RegionName"'
+        data_type: NUMBER
+        unique: false
 
-      - name: Expense
-        columns:
-          - name: VoucherId
-            type: NUMBER
-            precision: 12
-            scale: 0
-            options:
-              nullable: false
-              primary_key: true
-          - name: Date
-            type: DATE
-            options:
-              nullable: true
-          - name: ExpenseCategoryId
-            type: NUMBER
-            precision: 4
-            scale: 0
-            options:
-              nullable: true
-          - name: ExpenseAreaId
-            type: NUMBER
-            precision: 4
-            scale: 0
-            options:
-              nullable: true
-          - name: CountryId
-            type: NUMBER
-            precision: 4
-            scale: 0
-            options:
-              nullable: true
-          - name: ChannelId
-            type: NUMBER
-            precision: 2
-            scale: 0
-            options:
-              nullable: true
-          - name: Details
-            type: VARCHAR
-            length: 200
-            options:
-              nullable: true
-          - name: Amount
-            type: NUMBER
-            precision: 14
-            scale: 2
-            options:
-              nullable: true
-        comment: 'List of Operational Expenses'
+  - name: DateDetail
+    description: Details of Date.
+    base_table:
+      database: DEV_DB
+      schema: SALES
+      table: '"DateDetail"'
+    dimensions:
+      - name: Date
+        synonyms: [Date]
+        description: The date.
+        expr: '"Date"'
+        data_type: DATE
+        unique: true
+      - name: MonthId
+        synonyms: [MonthID]
+        description: The month identifier.
+        expr: '"MonthId"'
+        data_type: VARCHAR
+        unique: false
+      - name: YearId
+        synonyms: [YearID]
+        description: The year identifier.
+        expr: '"YearId"'
+        data_type: NUMBER
+        unique: false
+      - name: WeekId
+        synonyms: [WeekID]
+        description: The week identifier.
+        expr: '"WeekId"'
+        data_type: NUMBER
+        unique: false
+      - name: WeekDay
+        synonyms: [Week Day]
+        description: The day of the week.
+        expr: '"WeekDay"'
+        data_type: NUMBER
+        unique: false
+      - name: YearDay
+        synonyms: [Year Day]
+        description: The day of the year.
+        expr: '"YearDay"'
+        data_type: NUMBER
+        unique: false
+      - name: Quarter
+        synonyms: [Quarter]
+        description: The quarter of the year.
+        expr: '"Quarter"'
+        data_type: VARCHAR
+        unique: false
+      - name: HalfYear
+        synonyms: [Half Year]
+        description: The half year.
+        expr: '"HalfYear"'
+        data_type: VARCHAR
+        unique: false
+      - name: MonthName
+        synonyms: [Month Name]
+        description: The name of the month.
+        expr: '"MonthName"'
+        data_type: VARCHAR
+        unique: false
+      - name: DayName
+        synonyms: [Day Name]
+        description: The name of the day.
+        expr: '"DayName"'
+        data_type: VARCHAR
+        unique: false
+      - name: MonthNameAbbr
+        synonyms: [Month Name Abbreviation]
+        description: The abbreviated name of the month.
+        expr: '"MonthNameAbbr"'
+        data_type: VARCHAR
+        unique: false
+      - name: DayNameAbbr
+        synonyms: [Day Name Abbreviation]
+        description: The abbreviated name of the day.
+        expr: '"DayNameAbbr"'
+        data_type: VARCHAR
+        unique: false
+      - name: QuarterName
+        synonyms: [Quarter Name]
+        description: The name of the quarter.
+        expr: '"QuarterName"'
+        data_type: VARCHAR
+        unique: false
+      - name: HalfYearName
+        synonyms: [Half Year Name]
+        description: The name of the half year.
+        expr: '"HalfYearName"'
+        data_type: VARCHAR
+        unique: false
+      - name: MonthAndYear
+        synonyms: [Month and Year]
+        description: Combined month and year identifier.
+        expr: '"MonthAndYear"'
+        data_type: NUMBER
+        unique: false
 
-      - name: ExpenseArea
-        columns:
-          - name: ExpenseAreaId
-            type: NUMBER
-            precision: 4
-            scale: 0
-            options:
-              nullable: false
-              primary_key: true
-          - name: ExpenseAreaName
-            type: VARCHAR
-            length: 100
-            options:
-              nullable: true
-        comment: 'Expenses Area (HR, Science, Research, Finance, ...)'
+  - name: Expense
+    description: List of Operational Expenses.
+    base_table:
+      database: DEV_DB
+      schema: SALES
+      table: '"Expense"'
+    dimensions:
+      - name: VoucherId
+        synonyms: [VoucherID]
+        description: The unique identifier for each expense voucher.
+        expr: '"VoucherId"'
+        data_type: NUMBER
+        unique: true
+      - name: Date
+        synonyms: [Expense Date]
+        description: The date of the expense.
+        expr: '"Date"'
+        data_type: DATE
+        unique: false
+      - name: ExpenseCategoryId
+        synonyms: [ExpenseCategoryID]
+        description: The unique identifier for each expense category.
+        expr: '"ExpenseCategoryId"'
+        data_type: NUMBER
+        unique: false
+      - name: ExpenseAreaId
+        synonyms: [ExpenseAreaID]
+        description: The unique identifier for each expense area.
+        expr: '"ExpenseAreaId"'
+        data_type: NUMBER
+        unique: false
+      - name: CountryId
+        synonyms: [CountryID]
+        description: The unique identifier for each country.
+        expr: '"CountryId"'
+        data_type: NUMBER
+        unique: false
+      - name: ChannelId
+        synonyms: [ChannelID]
+        description: The unique identifier for each channel.
+        expr: '"ChannelId"'
+        data_type: NUMBER
+        unique: false
+      - name: Details
+        synonyms: [Expense Details]
+        description: Additional details about the expense.
+        expr: '"Details"'
+        data_type: VARCHAR
+        unique: false
+    measures:
+      - name: TotalAmount
+        synonyms: [Total Expense Amount]
+        description: The total amount for the expense.
+        expr: 'SUM("Amount")'
+        data_type: NUMBER
+        default_aggregation: sum
 
-      - name: Product
-        columns:
-          - name: ProductId
-            type: NUMBER
-            precision: 6
-            scale: 0
-            options:
-              nullable: false
-              primary_key: true
-          - name: ProductName
-            type: VARCHAR
-            length: 100
-            options:
-              nullable: true
-          - name: ProductCategoryId
-            type: NUMBER
-            precision: 4
-            scale: 0
-            options:
-              nullable: true
-        comment: 'List of Products'
+  - name: ExpenseArea
+    description: Expenses Area (HR, Science, Research, Finance, ...).
+    base_table:
+      database: DEV_DB
+      schema: SALES
+      table: '"ExpenseArea"'
+    dimensions:
+      - name: ExpenseAreaId
+        synonyms: [ExpenseAreaID]
+        description: The unique identifier for each expense area.
+        expr: '"ExpenseAreaId"'
+        data_type: NUMBER
+        unique: true
+      - name: ExpenseAreaName
+        synonyms: [Expense Area Name]
+        description: The name of the expense area.
+        expr: '"ExpenseAreaName"'
+        data_type: VARCHAR
+        unique: false
 
-      - name: ProductCategory
-        columns:
-          - name: ProductCategoryId
-            type: NUMBER
-            precision: 4
-            scale: 0
-            options:
-              nullable: false
-              primary_key: true
-          - name: ProductCategoryName
-            type: VARCHAR
-            length: 100
-            options:
-              nullable: true
-        comment: 'List of Product Categories'
+  - name: Product
+    description: List of Products.
+    base_table:
+      database: DEV_DB
+      schema: SALES
+      table: '"Product"'
+    dimensions:
+      - name: ProductId
+        synonyms: [ProductID]
+        description: The unique identifier for each product.
+        expr: '"ProductId"'
+        data_type: NUMBER
+        unique: true
+      - name: ProductName
+        synonyms: [Product Name]
+        description: The name of the product.
+        expr: '"ProductName"'
+        data_type: VARCHAR
+        unique: false
+      - name: ProductCategoryId
+        synonyms: [ProductCategoryID]
+        description: The unique identifier for each product category.
+        expr: '"ProductCategoryId"'
+        data_type: NUMBER
+        unique: false
 
-      - name: Region
-        columns:
-          - name: RegionId
-            type: NUMBER
-            precision: 2
-            scale: 0
-            options:
-              nullable: false
-              primary_key: true
-          - name: RegionName
-            type: VARCHAR
-            length: 50
-            options:
-              nullable: true
-        comment: 'List of all Geographical Regions like APAC, LATAM, NA, EU, ...'
+  - name: ProductCategory
+    description: List of Product Categories.
+    base_table:
+      database: DEV_DB
+      schema: SALES
+      table: '"ProductCategory"'
+    dimensions:
+      - name: ProductCategoryId
+        synonyms: [ProductCategoryID]
+        description: The unique identifier for each product category.
+        expr: '"ProductCategoryId"'
+        data_type: NUMBER
+        unique: true
+      - name: ProductCategoryName
+        synonyms: [Product Category Name]
+        description: The name of the product category.
+        expr: '"ProductCategoryName"'
+        data_type: VARCHAR
+        unique: false
 
-      - name: Sale
-        columns:
-          - name: SaleId
-            type: NUMBER
-            precision: 12
-            scale: 0
-            options:
-              nullable: false
-              primary_key: true
-          - name: SaleDate
-            type: DATE
-            options:
-              nullable: true
-          - name: ChannelId
-            type: NUMBER
-            precision: 2
-            scale: 0
-            options:
-              nullable: true
-          - name: CountryId
-            type: NUMBER
-            precision: 4
-            scale: 0
-            options:
-              nullable: true
-          - name: AccountId
-            type: NUMBER
-            precision: 6
-            scale: 0
-            options:
-              nullable: true
-        comment: 'List of Sales Master Data'
+  - name: Region
+    description: List of all Geographical Regions like APAC, LATIM, NA, EU, ... .
+    base_table:
+      database: DEV_DB
+      schema: SALES
+      table: '"Region"'
+    dimensions:
+      - name: RegionId
+        synonyms: [RegionID]
+        description: The unique identifier for each region.
+        expr: '"RegionId"'
+        data_type: NUMBER
+        unique: true
+      - name: RegionName
+        synonyms: [Region Name]
+        description: The name of the region.
+        expr: '"RegionName"'
+        data_type: VARCHAR
+        unique: false
 
-      - name: SaleLineItem
-        columns:
-          - name: SaleId
-            type: NUMBER
-            precision: 12
-            scale: 0
-            options:
-              nullable: false
-          - name: ProductId
-            type: NUMBER
-            precision: 6
-            scale: 0
-            options:
-              nullable: false
-          - name: Quantity
-            type: NUMBER
-            precision: 14
-            scale: 2
-            options:
-              nullable: true
-          - name: Rate
-            type: NUMBER
-            precision: 14
-            scale: 2
-            options:
-              nullable: true
-        comment: 'List of Sale Line Items'
+  - name: Sale
+    description: List of Sales Master Data.
+    base_table:
+      database: DEV_DB
+      schema: SALES
+      table: '"Sale"'
+    dimensions:
+      - name: SaleId
+        synonyms: [SaleID]
+        description: The unique identifier for each sale.
+        expr: '"SaleId"'
+        data_type: NUMBER
+        unique: true
+      - name: SaleDate
+        synonyms: [Sale Date]
+        description: The date of the sale.
+        expr: '"SaleDate"'
+        data_type: DATE
+        unique: false
+      - name: ChannelId
+        synonyms: [ChannelID]
+        description: The unique identifier for each channel.
+        expr: '"ChannelId"'
+        data_type: NUMBER
+        unique: false
+      - name: CountryId
+        synonyms: [CountryID]
+        description: The unique identifier for each country.
+        expr: '"CountryId"'
+        data_type: NUMBER
+        unique: false
+      - name: AccountId
+        synonyms: [AccountID]
+        description: The unique identifier for each account.
+        expr: '"AccountId"'
+        data_type: NUMBER
+        unique: false
 
-      - name: SaleTarget
-        columns:
-          - name: MonthId
-            type: VARCHAR
-            length: 7
-            options:
-              nullable: false
-          - name: Target
-            type: NUMBER
-            precision: 14
-            scale: 2
-            options:
-              nullable: true
-        comment: 'Sales Target (Generic)'
+  - name: SaleLineItem
+    description: List of Sale Line Items.
+    base_table:
+      database: DEV_DB
+      schema: SALES
+      table: '"SaleLineItem"'
+    dimensions:
+      - name: SaleId
+        synonyms: [SaleID]
+        description: The unique identifier for each sale.
+        expr: '"SaleId"'
+        data_type: NUMBER
+        unique: true
+      - name: ProductId
+        synonyms: [ProductID]
+        description: The unique identifier for each product.
+        expr: '"ProductId"'
+        data_type: NUMBER
+        unique: false
+    measures:
+      - name: Quantity
+        synonyms: [Quantity Sold]
+        description: The quantity of the product sold.
+        expr: 'SUM("Quantity")'
+        data_type: NUMBER
+        default_aggregation: sum
+      - name: Rate
+        synonyms: [Price Per Unit]
+        description: The rate (price per unit) of the product.
+        expr: 'SUM("Rate")'
+        data_type: NUMBER
+        default_aggregation: sum
 
-      - name: SaleTargetForAccount
-        columns:
-          - name: AccountId
-            type: NUMBER
-            precision: 6
-            scale: 0
-            options:
-              nullable: false
-          - name: MonthId
-            type: VARCHAR
-            length: 7
-            options:
-              nullable: false
-          - name: Target
-            type: NUMBER
-            precision: 14
-            scale: 2
-            options:
-              nullable: true
-        comment: 'Sale Target for Accounts'
+  - name: SaleTarget
+    description: Sales Target (Generic).
+    base_table:
+      database: DEV_DB
+      schema: SALES
+      table: '"SaleTarget"'
+    dimensions:
+      - name: MonthId
+        synonyms: [MonthID]
+        description: The month identifier.
+        expr: '"MonthId"'
+        data_type: VARCHAR
+        unique: false
+    measures:
+      - name: Target
+        synonyms: [Sales Target]
+        description: The sales target amount.
+        expr: '"Target"'
+        data_type: NUMBER
+        default_aggregation: sum
 
-      - name: SaleTargetForProduct
-        columns:
-          - name: ProductId
-            type: NUMBER
-            precision: 6
-            scale: 0
-            options:
-              nullable: false
-          - name: MonthId
-            type: VARCHAR
-            length: 7
-            options:
-              nullable: false
-          - name: Target
-            type: NUMBER
-            precision: 14
-            scale: 2
-            options:
-              nullable: true
-        comment: 'Sales Target for Product'
+  - name: SaleTargetForAccount
+    description: Sale Target for Accounts.
+    base_table:
+      database: DEV_DB
+      schema: SALES
+      table: '"SaleTargetForAccount"'
+    dimensions:
+      - name: AccountId
+        synonyms: [AccountID]
+        description: The unique identifier for each account.
+        expr: '"AccountId"'
+        data_type: NUMBER
+        unique: false
+      - name: MonthId
+        synonyms: [MonthID]
+        description: The month identifier.
+        expr: '"MonthId"'
+        data_type: VARCHAR
+        unique: false
+    measures:
+      - name: Target
+        synonyms: [Sales Target]
+        description: The sales target amount for the account.
+        expr: '"Target"'
+        data_type: NUMBER
+        default_aggregation: sum
 
-      - name: SaleTargetForProductCategory
-        columns:
-          - name: ProductCategoryId
-            type: NUMBER
-            precision: 6
-            scale: 0
-            options:
-              nullable: false
-          - name: MonthId
-            type: VARCHAR
-            length: 7
-            options:
-              nullable: false
-          - name: Target
-            type: NUMBER
-            precision: 14
-            scale: 2
-            options:
-              nullable: true
-        comment: 'Sales Target for Product Category'
+  - name: SaleTargetForProduct
+    description: Sales Target for Product.
+    base_table:
+      database: DEV_DB
+      schema: SALES
+      table: '"SaleTargetForProduct"'
+    dimensions:
+      - name: ProductId
+        synonyms: [ProductID]
+        description: The unique identifier for each product.
+        expr: '"ProductId"'
+        data_type: NUMBER
+        unique: false
+      - name: MonthId
+        synonyms: [MonthID]
+        description: The month identifier.
+        expr: '"MonthId"'
+        data_type: VARCHAR
+        unique: false
+    measures:
+      - name: Target
+        synonyms: [Sales Target]
+        description: The sales target amount for the product.
+        expr: '"Target"'
+        data_type: NUMBER
+        default_aggregation: sum
 
-      - name: SalesTarget
-        columns:
-          - name: ProductId
-            type: NUMBER
-            precision: 6
-            scale: 0
-            options:
-              nullable: false
-          - name: ChannelId
-            type: NUMBER
-            precision: 2
-            scale: 0
-            options:
-              nullable: false
-          - name: CountryId
-            type: NUMBER
-            precision: 7
-            scale: 0
-            options:
-              nullable: false
-          - name: AccountId
-            type: NUMBER
-            precision: 6
-            scale: 0
-            options:
-              nullable: false
-          - name: MonthId
-            type: VARCHAR
-            length: 7
-            options:
-              nullable: false
-          - name: Target
-            type: NUMBER
-            precision: 14
-            scale: 2
-            options:
-              nullable: true
+  - name: SaleTargetForProductCategory
+    description: Sales Target for Product Category.
+    base_table:
+      database: DEV_DB
+      schema: SALES
+      table: '"SaleTargetForProductCategory"'
+    dimensions:
+      - name: ProductCategoryId
+        synonyms: [ProductCategoryID]
+        description: The unique identifier for each product category.
+        expr: '"ProductCategoryId"'
+        data_type: NUMBER
+        unique: false
+      - name: MonthId
+        synonyms: [MonthID]
+        description: The month identifier.
+        expr: '"MonthId"'
+        data_type: VARCHAR
+        unique: false
+    measures:
+      - name: Target
+        synonyms: [Sales Target]
+        description: The sales target amount for the product category.
+        expr: '"Target"'
+        data_type: NUMBER
+        default_aggregation: sum
+
+  - name: SalesTarget
+    description: Sales Target by Product, Channel, Country, and Account.
+    base_table:
+      database: DEV_DB
+      schema: SALES
+      table: '"SalesTarget"'
+    dimensions:
+      - name: ProductId
+        synonyms: [ProductID]
+        description: The unique identifier for each product.
+        expr: '"ProductId"'
+        data_type: NUMBER
+        unique: false
+      - name: ChannelId
+        synonyms: [ChannelID]
+        description: The unique identifier for each channel.
+        expr: '"ChannelId"'
+        data_type: NUMBER
+        unique: false
+      - name: CountryId
+        synonyms: [CountryID]
+        description: The unique identifier for each country.
+        expr: '"CountryId"'
+        data_type: NUMBER
+        unique: false
+      - name: AccountId
+        synonyms: [AccountID]
+        description: The unique identifier for each account.
+        expr: '"AccountId"'
+        data_type: NUMBER
+        unique: false
+      - name: MonthId
+        synonyms: [MonthID]
+        description: The month identifier.
+        expr: '"MonthId"'
+        data_type: VARCHAR
+        unique: false
+    measures:
+      - name: Target
+        synonyms: [Sales Target]
+        description: The sales target amount.
+        expr: '"Target"'
+        data_type: NUMBER
+        default_aggregation: sum
